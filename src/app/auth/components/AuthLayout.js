@@ -7,14 +7,10 @@ export default function AuthLayout({ children, title, subtitle }) {
         
         {/* Header */}
         <div className="text-center">
-          {/* Logo */}
-          <div className="mx-auto h-16 w-16 bg-blue-600 rounded-xl flex items-center justify-center mb-6">
-            <span className="text-2xl font-bold text-white">💰</span>
-          </div>
           
           {/* App Name */}
           <h1 className="text-3xl font-bold text-gray-900 mb-2">
-            ReimburseApp
+            Reimburse Web
           </h1>
           
           {/* Page Title */}
@@ -40,7 +36,7 @@ export default function AuthLayout({ children, title, subtitle }) {
         {/* Footer */}
         <div className="text-center">
           <p className="text-xs text-gray-500">
-            © 2024 ReimburseApp. All rights reserved.
+            © {new Date().getFullYear()} Reimburse Web. Powered By Yuscode. All rights reserved.
           </p>
           <div className="mt-2 flex justify-center space-x-4 text-xs text-gray-400">
             <button className="hover:text-gray-600">Privacy Policy</button>
