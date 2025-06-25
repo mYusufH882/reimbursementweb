@@ -1,9 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import MainLayout from '@/component/layout/MainLayout';
-import Card from '@/component/ui/Card';
-import { CardHeader, CardContent } from '@/component/ui/Card';
+import { DashboardLayout } from '@/component/layout/MainLayout';
+import Card, { CardHeader, CardContent } from '@/component/ui/Card';
 import Button from '@/component/ui/Button';
 import Badge from '@/component/ui/Badge';
 import Input from '@/component/ui/Input';
@@ -203,22 +202,32 @@ export default function AdminUserManagement() {
 
   if (loading) {
     return (
-      <MainLayout>
+      <DashboardLayout
+        user={{ name: 'Admin User', role: 'admin' }}
+        currentPath="/admin/users"
+        onNavigate={(path) => router.push(path)}
+        onLogout={() => console.log('logout')}
+      >
         <div className="flex justify-center items-center py-8">
           <span>Loading...</span>
         </div>
-      </MainLayout>
+      </DashboardLayout>
     );
   }
 
   return (
-    <MainLayout>
+    <DashboardLayout
+      user={{ name: 'Admin User', role: 'admin' }}
+      currentPath="/admin/users"
+      onNavigate={(path) => router.push(path)}
+      onLogout={() => console.log('logout')}
+    >
       <div className="p-6">
         
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold">User Management</h1>
+            <h1 className="text-2xl font-bold text-gray-900">User Management</h1>
             <p className="text-gray-600">Manage system users and roles</p>
           </div>
           <Button variant="primary" onClick={handleCreate}>
@@ -228,25 +237,25 @@ export default function AdminUserManagement() {
 
         {/* Simple Stats */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <Card>
+          <Card className="shadow-sm border border-gray-200">
             <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold">{stats.total}</div>
+              <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
               <div className="text-sm text-gray-600">Total Users</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="shadow-sm border border-gray-200">
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-red-600">{stats.admins}</div>
               <div className="text-sm text-gray-600">Admins</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="shadow-sm border border-gray-200">
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-yellow-600">{stats.managers}</div>
               <div className="text-sm text-gray-600">Managers</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="shadow-sm border border-gray-200">
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-blue-600">{stats.employees}</div>
               <div className="text-sm text-gray-600">Employees</div>
@@ -255,56 +264,66 @@ export default function AdminUserManagement() {
         </div>
 
         {/* Filters */}
-        <Card className="mb-6">
-          <CardContent className="p-4">
-            <div className="flex gap-4">
-              <Input
-                placeholder="Search users..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="flex-1"
-              />
-              <Select
-                value={roleFilter}
-                onChange={(e) => setRoleFilter(e.target.value)}
-              >
-                <option value="">All Roles</option>
-                <option value="admin">Admin</option>
-                <option value="manager">Manager</option>
-                <option value="employee">Employee</option>
-              </Select>
+        <Card className="mb-6 shadow-sm border border-gray-200">
+          <CardHeader className="border-b border-gray-200 pb-4">
+            <h3 className="font-semibold text-gray-900">Filters</h3>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                <Input
+                  placeholder="Search users..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Role</label>
+                <Select
+                  value={roleFilter}
+                  onChange={(e) => setRoleFilter(e.target.value)}
+                  className="w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white"
+                >
+                  <option value="">All Roles</option>
+                  <option value="admin">Admin</option>
+                  <option value="manager">Manager</option>
+                  <option value="employee">Employee</option>
+                </Select>
+              </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Users Table */}
-        <Card>
-          <CardHeader>
-            <h3 className="font-semibold">Users ({filteredUsers.length})</h3>
+        <Card className="shadow-sm border border-gray-200">
+          <CardHeader className="border-b border-gray-200 pb-4">
+            <h3 className="font-semibold text-gray-900">Users ({filteredUsers.length})</h3>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0">
             {filteredUsers.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-gray-500">No users found</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left p-3">Name</th>
-                      <th className="text-left p-3">Email</th>
-                      <th className="text-left p-3">Role</th>
-                      <th className="text-left p-3">Actions</th>
+                <table className="w-full border-collapse">
+                  <thead className="bg-gray-50">
+                    <tr className="border-b border-gray-200">
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="bg-white divide-y divide-gray-200">
                     {filteredUsers.map((user) => (
-                      <tr key={user.id} className="border-b hover:bg-gray-50">
-                        <td className="p-3 font-medium">{user.name}</td>
-                        <td className="p-3 text-gray-600">{user.email}</td>
-                        <td className="p-3">{getRoleBadge(user.role)}</td>
-                        <td className="p-3">
+                      <tr key={user.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{user.name}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-gray-600">{user.email}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{getRoleBadge(user.role)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex gap-2">
                             <Button
                               size="sm"
@@ -485,6 +504,6 @@ export default function AdminUserManagement() {
         </Modal>
 
       </div>
-    </MainLayout>
+    </DashboardLayout>
   );
 }

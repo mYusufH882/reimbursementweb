@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import MainLayout from '@/component/layout/MainLayout';
-import Card from '@/component/ui/Card';
-import { CardHeader, CardContent } from '@/component/ui/Card';
+import { DashboardLayout } from '@/component/layout/MainLayout';
+import Card, { CardHeader, CardContent } from '@/component/ui/Card';
 import Button from '@/component/ui/Button';
 import Badge from '@/component/ui/Badge';
 import Textarea from '@/component/ui/Textarea';
@@ -165,48 +164,63 @@ export default function ManagerRequestDetail() {
 
   if (loading) {
     return (
-      <MainLayout>
+      <DashboardLayout
+        user={{ name: 'Manager User', role: 'manager' }}
+        currentPath={`/manager/requests/${params.id}`}
+        onNavigate={(path) => router.push(path)}
+        onLogout={() => console.log('logout')}
+      >
         <div className="flex justify-center items-center py-8">
           <span>Loading...</span>
         </div>
-      </MainLayout>
+      </DashboardLayout>
     );
   }
 
   if (!request) {
     return (
-      <MainLayout>
+      <DashboardLayout
+        user={{ name: 'Manager User', role: 'manager' }}
+        currentPath={`/manager/requests/${params.id}`}
+        onNavigate={(path) => router.push(path)}
+        onLogout={() => console.log('logout')}
+      >
         <div className="text-center py-12">
           <h1 className="text-2xl font-bold mb-2">Request Not Found</h1>
           <Button onClick={() => router.push('/manager/pending')}>
             Back to Pending
           </Button>
         </div>
-      </MainLayout>
+      </DashboardLayout>
     );
   }
 
   const isPending = request.status === 'pending';
 
   return (
-    <MainLayout>
-      <div className="max-w-4xl mx-auto p-6">
+    <DashboardLayout
+      user={{ name: 'Manager User', role: 'manager' }}
+      currentPath={`/manager/requests/${params.id}`}
+      onNavigate={(path) => router.push(path)}
+      onLogout={() => console.log('logout')}
+    >
+      <div className="mx-auto p-6">
         
         {/* Header */}
         <div className="flex justify-between items-start mb-6">
           <div>
             <Button
-              variant="outline"
+              variant="secondary"
               onClick={() => router.back()}
               className="mb-3"
             >
               ← Back
             </Button>
-            <h1 className="text-2xl font-bold">{request.title}</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{request.title}</h1>
           </div>
           <div className="text-right">
             {getStatusBadge(request.status)}
-            <div className="mt-2 text-sm text-gray-500">
+            <div className="mt-2 text-sm text-gray-900">
               Submitted: {formatDateTime(request.submitted_at)}
             </div>
           </div>
@@ -218,24 +232,24 @@ export default function ManagerRequestDetail() {
           <div className="lg:col-span-2 space-y-6">
             
             {/* Employee Info */}
-            <Card>
-              <CardHeader>
-                <h2 className="text-lg font-semibold">Employee</h2>
+            <Card className="shadow-sm border border-gray-200">
+              <CardHeader className="border-b border-gray-200 pb-4">
+                <h2 className="text-lg font-semibold text-gray-900">Employee</h2>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-6">
                 <div>
-                  <div className="text-lg font-medium">{request.user.name}</div>
+                  <div className="text-lg font-medium text-gray-900">{request.user.name}</div>
                   <div className="text-blue-600">{request.user.email}</div>
                 </div>
               </CardContent>
             </Card>
 
             {/* Request Details */}
-            <Card>
-              <CardHeader>
-                <h2 className="text-lg font-semibold">Request Details</h2>
+            <Card className="shadow-sm border border-gray-200">
+              <CardHeader className="border-b border-gray-200 pb-4">
+                <h2 className="text-lg font-semibold text-gray-900">Request Details</h2>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="p-6 space-y-4">
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
@@ -246,7 +260,7 @@ export default function ManagerRequestDetail() {
                   </div>
                   <div>
                     <label className="text-sm font-medium text-gray-700">Category</label>
-                    <div className="text-lg font-medium">{request.category.name}</div>
+                    <div className="text-lg font-medium text-gray-900">{request.category.name}</div>
                   </div>
                 </div>
 
@@ -261,11 +275,11 @@ export default function ManagerRequestDetail() {
             </Card>
 
             {/* Proof Files */}
-            <Card>
-              <CardHeader>
-                <h2 className="text-lg font-semibold">Proof Files ({request.proofs.length})</h2>
+            <Card className="shadow-sm border border-gray-200">
+              <CardHeader className="border-b border-gray-200 pb-4">
+                <h2 className="text-lg font-semibold text-gray-900">Proof Files ({request.proofs.length})</h2>
               </CardHeader>
-              <CardContent>
+              <CardContent className="p-6">
                 {request.proofs.length === 0 ? (
                   <p className="text-gray-500 text-center py-4">No proof files</p>
                 ) : (
@@ -276,14 +290,14 @@ export default function ManagerRequestDetail() {
                         className="flex items-center justify-between p-3 border rounded-lg"
                       >
                         <div>
-                          <div className="font-medium text-sm">{proof.original_name}</div>
+                          <div className="font-medium text-sm text-gray-900">{proof.original_name}</div>
                           <div className="text-xs text-gray-500">
                             {formatFileSize(proof.file_size)} • {proof.file_type}
                           </div>
                         </div>
                         <Button
                           size="sm"
-                          variant="outline"
+                          variant="success"
                           onClick={() => downloadProof(proof)}
                         >
                           Download
@@ -302,11 +316,11 @@ export default function ManagerRequestDetail() {
             
             {/* Actions */}
             {isPending && (
-              <Card>
-                <CardHeader>
-                  <h3 className="font-semibold">Review Actions</h3>
+              <Card className="shadow-sm border border-gray-200">
+                <CardHeader className="border-b border-gray-200 pb-4">
+                  <h3 className="font-semibold text-gray-900">Review Actions</h3>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="p-6 space-y-3">
                   
                   <Button
                     variant="success"
@@ -318,7 +332,7 @@ export default function ManagerRequestDetail() {
                   </Button>
                   
                   <Button
-                    variant="error"
+                    variant="danger"
                     onClick={() => setShowRejectionModal(true)}
                     disabled={processing}
                     className="w-full"
@@ -331,35 +345,35 @@ export default function ManagerRequestDetail() {
             )}
 
             {/* Quick Info */}
-            <Card>
-              <CardHeader>
-                <h3 className="font-semibold">Info</h3>
+            <Card className="shadow-sm border border-gray-200">
+              <CardHeader className="border-b border-gray-200 pb-4">
+                <h3 className="font-semibold text-gray-900">Info</h3>
               </CardHeader>
-              <CardContent className="space-y-2 text-sm">
+              <CardContent className="p-6 space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600">ID:</span>
-                  <span>{request.id}</span>
+                  <span className="font-medium text-gray-900">{request.id}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Employee:</span>
-                  <span>{request.user.name}</span>
+                  <span className="font-medium text-gray-900">{request.user.name}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Category:</span>
-                  <span>{request.category.name}</span>
+                  <span className="font-medium text-gray-900">{request.category.name}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Files:</span>
-                  <span>{request.proofs.length}</span>
+                  <span className="font-medium text-gray-900">{request.proofs.length}</span>
                 </div>
               </CardContent>
             </Card>
 
             {/* Navigation */}
-            <Card>
+            <Card className="shadow-sm border border-gray-200">
               <CardContent className="p-4">
                 <Button
-                  variant="outline"
+                  variant="primary"
                   onClick={() => router.push('/manager/pending')}
                   className="w-full"
                 >
@@ -456,6 +470,6 @@ export default function ManagerRequestDetail() {
         </Modal>
 
       </div>
-    </MainLayout>
+    </DashboardLayout>
   );
 }

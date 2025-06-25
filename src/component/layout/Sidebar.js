@@ -77,7 +77,7 @@ export default function Sidebar({ userRole = 'employee', currentPath = '/', onNa
         label: 'Reports', 
         icon: '📈', 
         path: '/manager/reports',
-        description: 'Monthly Reports'
+        // description: 'Monthly Reports'
       }
     ],
     admin: [

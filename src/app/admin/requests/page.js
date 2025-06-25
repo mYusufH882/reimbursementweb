@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import MainLayout from '@/component/layout/MainLayout';
-import Card from '@/component/ui/Card';
-import { CardHeader, CardContent } from '@/component/ui/Card';
+import { DashboardLayout } from '@/component/layout/MainLayout';
+import Card, { CardHeader, CardContent } from '@/component/ui/Card';
 import Button from '@/component/ui/Button';
 import Badge from '@/component/ui/Badge';
 import Input from '@/component/ui/Input';
@@ -180,22 +179,32 @@ export default function AdminAllRequests() {
 
   if (loading) {
     return (
-      <MainLayout>
+      <DashboardLayout
+        user={{ name: 'Admin User', role: 'admin' }}
+        currentPath="/admin/requests"
+        onNavigate={(path) => router.push(path)}
+        onLogout={() => console.log('logout')}
+      >
         <div className="flex justify-center items-center py-8">
           <span>Loading...</span>
         </div>
-      </MainLayout>
+      </DashboardLayout>
     );
   }
 
   return (
-    <MainLayout>
+    <DashboardLayout
+      user={{ name: 'Admin User', role: 'admin' }}
+      currentPath="/admin/requests"
+      onNavigate={(path) => router.push(path)}
+      onLogout={() => console.log('logout')}
+    >
       <div className="p-6">
         
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold">System Requests</h1>
+            <h1 className="text-2xl font-bold text-gray-900">System Requests</h1>
             <p className="text-gray-600">All reimbursement requests in the system</p>
           </div>
           <Button
@@ -209,11 +218,11 @@ export default function AdminAllRequests() {
 
         {/* Simple Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Card>
+          <Card className="shadow-sm border border-gray-200">
             <CardContent className="p-4">
               <div className="flex justify-between items-center">
                 <div>
-                  <div className="text-2xl font-bold">{stats.total}</div>
+                  <div className="text-2xl font-bold text-gray-900">{stats.total}</div>
                   <div className="text-sm text-gray-600">Total Requests</div>
                 </div>
                 <div className="text-right text-sm">
@@ -225,11 +234,11 @@ export default function AdminAllRequests() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-sm border border-gray-200">
             <CardContent className="p-4">
               <div className="flex justify-between items-center">
                 <div>
-                  <div className="text-lg font-bold">{formatCurrency(stats.totalAmount)}</div>
+                  <div className="text-lg font-bold text-gray-900">{formatCurrency(stats.totalAmount)}</div>
                   <div className="text-sm text-gray-600">Total Amount</div>
                 </div>
                 <div className="text-2xl">💰</div>
@@ -237,7 +246,7 @@ export default function AdminAllRequests() {
             </CardContent>
           </Card>
 
-          <Card>
+          <Card className="shadow-sm border border-gray-200">
             <CardContent className="p-4">
               <div className="flex justify-between items-center">
                 <div>
@@ -251,26 +260,40 @@ export default function AdminAllRequests() {
         </div>
 
         {/* Filters */}
-        <Card className="mb-6">
-          <CardContent className="p-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <Card className="mb-6 shadow-sm border border-gray-200">
+        <CardHeader className="border-b border-gray-200 pb-4">
+          <h3 className="font-semibold text-gray-900">Filters</h3>
+        </CardHeader>
+        <CardContent className="p-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
               <Input
                 placeholder="Search requests..."
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
+                className="w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white"
               />
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Status</label>
               <Select
                 value={statusFilter}
                 onChange={(e) => setStatusFilter(e.target.value)}
+                className="w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white"
               >
                 <option value="">All Status</option>
                 <option value="pending">Pending</option>
                 <option value="approved">Approved</option>
                 <option value="rejected">Rejected</option>
               </Select>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
               <Select
                 value={categoryFilter}
                 onChange={(e) => setCategoryFilter(e.target.value)}
+                className="w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white"
               >
                 <option value="">All Categories</option>
                 {uniqueCategories.map(category => (
@@ -280,50 +303,51 @@ export default function AdminAllRequests() {
                 ))}
               </Select>
             </div>
-          </CardContent>
+          </div>
+        </CardContent>
         </Card>
 
         {/* Requests Table */}
-        <Card>
-          <CardHeader>
-            <h3 className="font-semibold">All Requests ({filteredRequests.length})</h3>
+        <Card className="shadow-sm border border-gray-200">
+          <CardHeader className="border-b border-gray-200 pb-4">
+            <h3 className="font-semibold text-gray-900">All Requests ({filteredRequests.length})</h3>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0">
             {filteredRequests.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-gray-500">No requests found</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left p-3">ID</th>
-                      <th className="text-left p-3">Employee</th>
-                      <th className="text-left p-3">Title</th>
-                      <th className="text-left p-3">Category</th>
-                      <th className="text-left p-3">Amount</th>
-                      <th className="text-left p-3">Status</th>
-                      <th className="text-left p-3">Date</th>
-                      <th className="text-left p-3">Actions</th>
+                <table className="w-full border-collapse">
+                  <thead className="bg-gray-50">
+                    <tr className="border-b border-gray-200">
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="bg-white divide-y divide-gray-200">
                     {filteredRequests.map((request) => (
-                      <tr key={request.id} className="border-b hover:bg-gray-50">
-                        <td className="p-3 font-mono text-sm">{request.id}</td>
-                        <td className="p-3">
+                      <tr key={request.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-6 py-4 whitespace-nowrap text-sm font-mono text-gray-900">{request.id}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
                           <div>
-                            <div className="font-medium">{request.user.name}</div>
+                            <div className="font-medium text-gray-900">{request.user.name}</div>
                             <div className="text-sm text-gray-500">{request.user.email}</div>
                           </div>
                         </td>
-                        <td className="p-3 font-medium">{request.title}</td>
-                        <td className="p-3 text-gray-600">{request.category.name}</td>
-                        <td className="p-3 font-medium">{formatCurrency(request.amount)}</td>
-                        <td className="p-3">{getStatusBadge(request.status)}</td>
-                        <td className="p-3 text-gray-600">{formatDate(request.submitted_at)}</td>
-                        <td className="p-3">
+                        <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{request.title}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-gray-600">{request.category.name}</td>
+                        <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{formatCurrency(request.amount)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(request.status)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-gray-600">{formatDate(request.submitted_at)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
                           <Button
                             size="sm"
                             variant="outline"
@@ -342,6 +366,6 @@ export default function AdminAllRequests() {
         </Card>
 
       </div>
-    </MainLayout>
+    </DashboardLayout>
   );
 }

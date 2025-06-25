@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import MainLayout from '@/component/layout/MainLayout';
-import Card from '@/component/ui/Card';
-import { CardHeader, CardContent } from '@/component/ui/Card';
+import { DashboardLayout } from '@/component/layout/MainLayout';
+import Card, { CardHeader, CardContent } from '@/component/ui/Card';
 import Button from '@/component/ui/Button';
 import Input from '@/component/ui/Input';
 import Select from '@/component/ui/Select';
@@ -128,90 +127,110 @@ export default function PendingApprovals() {
 
   if (loading) {
     return (
-      <MainLayout>
+      <DashboardLayout
+        user={{ name: 'Manager User', role: 'manager' }}
+        currentPath="/manager/pending"
+        onNavigate={(path) => router.push(path)}
+        onLogout={() => console.log('logout')}
+      >
         <div className="flex justify-center items-center py-8">
           <span>Loading...</span>
         </div>
-      </MainLayout>
+      </DashboardLayout>
     );
   }
 
   return (
-    <MainLayout>
+    <DashboardLayout
+      user={{ name: 'Manager User', role: 'manager' }}
+      currentPath="/manager/pending"
+      onNavigate={(path) => router.push(path)}
+      onLogout={() => console.log('logout')}
+    >
       <div className="p-6">
         
         {/* Header */}
         <div className="mb-6">
-          <h1 className="text-2xl font-bold">Pending Approvals</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Pending Approvals</h1>
           <p className="text-gray-600">Review and approve requests</p>
         </div>
 
         {/* Filters */}
-        <Card className="mb-6">
-          <CardContent className="p-4">
-            <div className="flex gap-4">
-              <Input
-                placeholder="Search requests..."
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-                className="flex-1"
-              />
-              <Select
-                value={categoryFilter}
-                onChange={(e) => setCategoryFilter(e.target.value)}
-              >
-                <option value="">All Categories</option>
-                {uniqueCategories.map(category => (
-                  <option key={category} value={category}>
-                    {category}
-                  </option>
-                ))}
-              </Select>
+        <Card className="mb-6 shadow-sm border border-gray-200">
+          <CardHeader className="border-b border-gray-200 pb-4">
+            <h3 className="font-semibold text-gray-900">Filters</h3>
+          </CardHeader>
+          <CardContent className="p-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Search</label>
+                <Input
+                  placeholder="Search requests..."
+                  value={search}
+                  onChange={(e) => setSearch(e.target.value)}
+                  className="w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                <Select
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white"
+                >
+                  <option value="">All Categories</option>
+                  {uniqueCategories.map(category => (
+                    <option key={category} value={category}>
+                      {category}
+                    </option>
+                  ))}
+                </Select>
+              </div>
             </div>
           </CardContent>
         </Card>
 
         {/* Requests Table */}
-        <Card>
-          <CardHeader>
-            <h3 className="font-semibold">Pending Requests ({filteredRequests.length})</h3>
+        <Card className="shadow-sm border border-gray-200">
+          <CardHeader className="border-b border-gray-200 pb-4">
+            <h3 className="font-semibold text-gray-900">Pending Requests ({filteredRequests.length})</h3>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0">
             {filteredRequests.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-gray-500">No pending requests</p>
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left p-3">Employee</th>
-                      <th className="text-left p-3">Title</th>
-                      <th className="text-left p-3">Category</th>
-                      <th className="text-left p-3">Amount</th>
-                      <th className="text-left p-3">Date</th>
-                      <th className="text-left p-3">Actions</th>
+                <table className="w-full border-collapse">
+                  <thead className="bg-gray-50">
+                    <tr className="border-b border-gray-200">
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Employee</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Title</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Category</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="bg-white divide-y divide-gray-200">
                     {filteredRequests.map((request) => (
-                      <tr key={request.id} className="border-b hover:bg-gray-50">
-                        <td className="p-3">
+                      <tr key={request.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-6 py-4 whitespace-nowrap">
                           <div>
-                            <div className="font-medium">{request.user.name}</div>
+                            <div className="font-medium text-gray-900">{request.user.name}</div>
                             <div className="text-sm text-gray-500">{request.user.email}</div>
                           </div>
                         </td>
-                        <td className="p-3 font-medium">{request.title}</td>
-                        <td className="p-3 text-gray-600">{request.category.name}</td>
-                        <td className="p-3 font-medium">{formatCurrency(request.amount)}</td>
-                        <td className="p-3 text-gray-600">{formatDate(request.submitted_at)}</td>
-                        <td className="p-3">
+                        <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{request.title}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-gray-600">{request.category.name}</td>
+                        <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{formatCurrency(request.amount)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap text-gray-600">{formatDate(request.submitted_at)}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex gap-2">
                             <Button
                               size="sm"
-                              variant="outline"
+                              variant="primary"
                               onClick={() => router.push(`/manager/requests/${request.id}`)}
                             >
                               View
@@ -226,7 +245,7 @@ export default function PendingApprovals() {
                             </Button>
                             <Button
                               size="sm"
-                              variant="error"
+                              variant="danger"
                               onClick={() => handleApproval(request.id, 'reject')}
                               disabled={processing}
                             >
@@ -244,6 +263,6 @@ export default function PendingApprovals() {
         </Card>
 
       </div>
-    </MainLayout>
+    </DashboardLayout>
   );
 }

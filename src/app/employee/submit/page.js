@@ -2,9 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import MainLayout from '@/component/layout/MainLayout';
-import Card from '@/component/ui/Card';
-import { CardHeader, CardContent } from '@/component/ui/Card';
+import { DashboardLayout } from '@/component/layout/MainLayout';
+import Card, { CardHeader, CardContent } from '@/component/ui/Card';
 import Button from '@/component/ui/Button';
 import Input from '@/component/ui/Input';
 import Textarea from '@/component/ui/Textarea';
@@ -115,20 +114,25 @@ export default function SubmitRequest() {
   const selectedCategory = categories.find(c => c.id === parseInt(formData.category_id));
 
   return (
-    <MainLayout>
-      <div className="max-w-2xl mx-auto p-6">
+    <DashboardLayout
+      user={{ name: 'Employee User', role: 'employee' }}
+      currentPath="/employee/submit"
+      onNavigate={(path) => router.push(path)}
+      onLogout={() => console.log('logout')}
+    >
+      <div className="mx-auto p-6">
         
         <div className="mb-6">
-          <h1 className="text-2xl font-bold">Submit Request</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Submit Request</h1>
           <p className="text-gray-600">Fill the form below</p>
         </div>
 
-        <Card>
-          <CardHeader>
-            <h2 className="text-lg font-semibold">Request Details</h2>
+        <Card className="shadow-sm border border-gray-200">
+          <CardHeader className="border-b border-gray-200 pb-4">
+            <h2 className="text-lg font-semibold text-gray-900">Request Details</h2>
           </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
+          <CardContent className="p-6">
+            <form onSubmit={handleSubmit} className="space-y-6">
               
               <Input
                 label="Title"
@@ -137,6 +141,7 @@ export default function SubmitRequest() {
                 onChange={handleInputChange}
                 placeholder="e.g., Business lunch"
                 error={errors.title}
+                className="w-full text-gray-900"
                 required
               />
 
@@ -146,6 +151,7 @@ export default function SubmitRequest() {
                 value={formData.category_id}
                 onChange={handleInputChange}
                 error={errors.category_id}
+                className="w-full text-gray-900"
                 required
               >
                 <option value="">Select category</option>
@@ -178,6 +184,7 @@ export default function SubmitRequest() {
                 onChange={handleInputChange}
                 placeholder="0"
                 error={errors.amount}
+                className="w-full text-gray-900"
                 required
               />
 
@@ -189,11 +196,12 @@ export default function SubmitRequest() {
                 placeholder="Describe your expense..."
                 rows={4}
                 error={errors.description}
+                className="w-full text-gray-900 p-4"
                 required
               />
 
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="block text-sm font-medium mb-1 text-gray-700">
                   Proof Files <span className="text-red-500">*</span>
                 </label>
                 <FileUpload
@@ -233,6 +241,6 @@ export default function SubmitRequest() {
         </Card>
 
       </div>
-    </MainLayout>
+    </DashboardLayout>
   );
 }

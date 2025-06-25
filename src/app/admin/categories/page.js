@@ -1,9 +1,8 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import MainLayout from '@/component/layout/MainLayout';
-import Card from '@/component/ui/Card';
-import { CardHeader, CardContent } from '@/component/ui/Card';
+import { DashboardLayout } from '@/component/layout/MainLayout';
+import Card, { CardHeader, CardContent } from '@/component/ui/Card';
 import Button from '@/component/ui/Button';
 import Input from '@/component/ui/Input';
 import Select from '@/component/ui/Select';
@@ -186,22 +185,32 @@ export default function AdminCategoryManagement() {
 
   if (loading) {
     return (
-      <MainLayout>
+      <DashboardLayout
+        user={{ name: 'Admin User', role: 'admin' }}
+        currentPath="/admin/categories"
+        onNavigate={(path) => router.push(path)}
+        onLogout={() => console.log('logout')}
+      >
         <div className="flex justify-center items-center py-8">
           <span>Loading...</span>
         </div>
-      </MainLayout>
+      </DashboardLayout>
     );
   }
 
   return (
-    <MainLayout>
+    <DashboardLayout
+      user={{ name: 'Admin User', role: 'admin' }}
+      currentPath="/admin/categories"
+      onNavigate={(path) => router.push(path)}
+      onLogout={() => console.log('logout')}
+    >
       <div className="p-6">
         
         {/* Header */}
         <div className="flex justify-between items-center mb-6">
           <div>
-            <h1 className="text-2xl font-bold">Category Management</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Category Management</h1>
             <p className="text-gray-600">Manage reimbursement categories and limits</p>
           </div>
           <Button variant="primary" onClick={handleCreate}>
@@ -211,13 +220,13 @@ export default function AdminCategoryManagement() {
 
         {/* Simple Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-          <Card>
+          <Card className="shadow-sm border border-gray-200">
             <CardContent className="p-4 text-center">
-              <div className="text-2xl font-bold">{categories.length}</div>
+              <div className="text-2xl font-bold text-gray-900">{categories.length}</div>
               <div className="text-sm text-gray-600">Total Categories</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="shadow-sm border border-gray-200">
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-green-600">
                 {categories.filter(c => c.limit_type === 'amount').length}
@@ -225,7 +234,7 @@ export default function AdminCategoryManagement() {
               <div className="text-sm text-gray-600">Amount Limits</div>
             </CardContent>
           </Card>
-          <Card>
+          <Card className="shadow-sm border border-gray-200">
             <CardContent className="p-4 text-center">
               <div className="text-2xl font-bold text-blue-600">
                 {categories.filter(c => c.limit_type === 'quota').length}
@@ -236,11 +245,11 @@ export default function AdminCategoryManagement() {
         </div>
 
         {/* Categories Table */}
-        <Card>
-          <CardHeader>
-            <h3 className="font-semibold">Categories ({categories.length})</h3>
+        <Card className="shadow-sm border border-gray-200">
+          <CardHeader className="border-b border-gray-200 pb-4">
+            <h3 className="font-semibold text-gray-900">Categories ({categories.length})</h3>
           </CardHeader>
-          <CardContent>
+          <CardContent className="p-0">
             {categories.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-gray-500">No categories found</p>
@@ -254,20 +263,20 @@ export default function AdminCategoryManagement() {
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="w-full">
-                  <thead>
-                    <tr className="border-b">
-                      <th className="text-left p-3">Name</th>
-                      <th className="text-left p-3">Limit Type</th>
-                      <th className="text-left p-3">Limit Value</th>
-                      <th className="text-left p-3">Actions</th>
+                <table className="w-full border-collapse">
+                  <thead className="bg-gray-50">
+                    <tr className="border-b border-gray-200">
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Limit Type</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Limit Value</th>
+                      <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody className="bg-white divide-y divide-gray-200">
                     {categories.map((category) => (
-                      <tr key={category.id} className="border-b hover:bg-gray-50">
-                        <td className="p-3 font-medium">{category.name}</td>
-                        <td className="p-3">
+                      <tr key={category.id} className="hover:bg-gray-50 transition-colors">
+                        <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">{category.name}</td>
+                        <td className="px-6 py-4 whitespace-nowrap">
                           <span className={`inline-block px-2 py-1 rounded text-xs ${
                             category.limit_type === 'amount' 
                               ? 'bg-green-100 text-green-800' 
@@ -276,21 +285,21 @@ export default function AdminCategoryManagement() {
                             {category.limit_type === 'amount' ? 'Amount' : 'Quota'}
                           </span>
                         </td>
-                        <td className="p-3 font-medium">
+                        <td className="px-6 py-4 whitespace-nowrap font-medium text-gray-900">
                           {formatLimit(category.limit_type, category.limit_value)}
                         </td>
-                        <td className="p-3">
+                        <td className="px-6 py-4 whitespace-nowrap">
                           <div className="flex gap-2">
                             <Button
                               size="sm"
-                              variant="outline"
+                              variant="warning"
                               onClick={() => handleEdit(category)}
                             >
                               Edit
                             </Button>
                             <Button
                               size="sm"
-                              variant="error"
+                              variant="danger"
                               onClick={() => handleDelete(category)}
                             >
                               Delete
@@ -456,6 +465,6 @@ export default function AdminCategoryManagement() {
         </Modal>
 
       </div>
-    </MainLayout>
+    </DashboardLayout>
   );
 }
