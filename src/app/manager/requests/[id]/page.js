@@ -129,7 +129,7 @@ export default function ManagerRequestDetail() {
     const config = {
       pending: { variant: 'warning', text: 'Pending' },
       approved: { variant: 'success', text: 'Approved' },
-      rejected: { variant: 'error', text: 'Rejected' }
+      rejected: { variant: 'danger', text: 'Rejected' }
     };
     
     const { variant, text } = config[status] || { variant: 'default', text: status };
@@ -185,11 +185,8 @@ export default function ManagerRequestDetail() {
         onNavigate={(path) => router.push(path)}
         onLogout={() => console.log('logout')}
       >
-        <div className="text-center py-12">
-          <h1 className="text-2xl font-bold mb-2">Request Not Found</h1>
-          <Button onClick={() => router.push('/manager/pending')}>
-            Back to Pending
-          </Button>
+        <div className="text-center py-8">
+          <span>Request not found</span>
         </div>
       </DashboardLayout>
     );
@@ -204,80 +201,58 @@ export default function ManagerRequestDetail() {
       onNavigate={(path) => router.push(path)}
       onLogout={() => console.log('logout')}
     >
-      <div className="mx-auto p-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
-        {/* Header */}
-        <div className="flex justify-between items-start mb-6">
-          <div>
-            <Button
-              variant="secondary"
-              onClick={() => router.back()}
-              className="mb-3"
-            >
-              ← Back
-            </Button>
-            <h1 className="text-2xl font-bold text-gray-900">{request.title}</h1>
-          </div>
-          <div className="text-right">
-            {getStatusBadge(request.status)}
-            <div className="mt-2 text-sm text-gray-900">
-              Submitted: {formatDateTime(request.submitted_at)}
-            </div>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="grid lg:grid-cols-3 gap-8">
           
           {/* Main Content */}
           <div className="lg:col-span-2 space-y-6">
             
-            {/* Employee Info */}
+            {/* Header */}
             <Card className="shadow-sm border border-gray-200">
               <CardHeader className="border-b border-gray-200 pb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Employee</h2>
+                <div className="flex items-start justify-between">
+                  <div>
+                    <h1 className="text-2xl font-bold text-gray-900">{request.title}</h1>
+                    <p className="text-sm text-gray-500 mt-1">
+                      Request #{request.id} • Submitted {formatDateTime(request.submitted_at)}
+                    </p>
+                  </div>
+                  {getStatusBadge(request.status)}
+                </div>
               </CardHeader>
               <CardContent className="p-6">
-                <div>
-                  <div className="text-lg font-medium text-gray-900">{request.user.name}</div>
-                  <div className="text-blue-600">{request.user.email}</div>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <div>
+                    <h3 className="font-medium text-gray-900 mb-2">Amount</h3>
+                    <p className="text-2xl font-bold text-green-600">{formatCurrency(request.amount)}</p>
+                  </div>
+                  <div>
+                    <h3 className="font-medium text-gray-900 mb-2">Category</h3>
+                    <p className="text-lg text-gray-800">{request.category.name}</p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
 
-            {/* Request Details */}
-            <Card className="shadow-sm border border-gray-200">
-              <CardHeader className="border-b border-gray-200 pb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Request Details</h2>
-              </CardHeader>
-              <CardContent className="p-6 space-y-4">
-                
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="text-sm font-medium text-gray-700">Amount</label>
-                    <div className="text-2xl font-bold text-green-600">
-                      {formatCurrency(request.amount)}
-                    </div>
-                  </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-700">Category</label>
-                    <div className="text-lg font-medium text-gray-900">{request.category.name}</div>
-                  </div>
-                </div>
-
-                <div>
-                  <label className="text-sm font-medium text-gray-700">Description</label>
-                  <div className="mt-1 p-3 bg-gray-50 rounded-lg">
-                    <p className="text-gray-900">{request.description}</p>
-                  </div>
-                </div>
-
-              </CardContent>
-            </Card>
+            {/* Description */}
+            {request.description && (
+              <Card className="shadow-sm border border-gray-200">
+                <CardHeader className="border-b border-gray-200 pb-4">
+                  <h3 className="font-semibold text-gray-900">Description</h3>
+                </CardHeader>
+                <CardContent className="p-6">
+                  <p className="text-gray-700 leading-relaxed">{request.description}</p>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Proof Files */}
             <Card className="shadow-sm border border-gray-200">
               <CardHeader className="border-b border-gray-200 pb-4">
-                <h2 className="text-lg font-semibold text-gray-900">Proof Files ({request.proofs.length})</h2>
+                <h3 className="font-semibold text-gray-900">
+                  Proof Files ({request.proofs.length})
+                </h3>
               </CardHeader>
               <CardContent className="p-6">
                 {request.proofs.length === 0 ? (
@@ -390,82 +365,84 @@ export default function ManagerRequestDetail() {
           isOpen={showApprovalModal}
           onClose={() => setShowApprovalModal(false)}
           title="Approve Request"
+          size="md"
         >
-          <div className="p-4">
-            <p className="text-gray-700 mb-4">
-              Are you sure you want to approve this request?
-            </p>
-            
-            <div className="bg-green-50 rounded-lg p-4 mb-4">
-              <div className="text-sm text-green-800">
-                <p><strong>Employee:</strong> {request.user.name}</p>
-                <p><strong>Amount:</strong> {formatCurrency(request.amount)}</p>
-                <p><strong>Category:</strong> {request.category.name}</p>
-              </div>
+          <p className="text-gray-700 mb-4">
+            Are you sure you want to approve this request?
+          </p>
+          
+          <div className="bg-green-50 rounded-lg p-4 mb-6">
+            <div className="text-sm text-green-800">
+              <p><strong>Employee:</strong> {request.user.name}</p>
+              <p><strong>Amount:</strong> {formatCurrency(request.amount)}</p>
+              <p><strong>Category:</strong> {request.category.name}</p>
             </div>
+          </div>
 
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                onClick={() => setShowApprovalModal(false)}
-                disabled={processing}
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="success"
-                onClick={handleApprove}
-                disabled={processing}
-                className="flex-1"
-              >
-                {processing ? 'Approving...' : 'Approve'}
-              </Button>
-            </div>
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={() => setShowApprovalModal(false)}
+              disabled={processing}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="success"
+              onClick={handleApprove}
+              disabled={processing}
+              className="flex-1"
+            >
+              {processing ? 'Approving...' : 'Approve'}
+            </Button>
           </div>
         </Modal>
 
         {/* Rejection Modal */}
         <Modal
           isOpen={showRejectionModal}
-          onClose={() => setShowRejectionModal(false)}
+          onClose={() => {
+            setShowRejectionModal(false);
+            setRejectionReason('');
+          }}
           title="Reject Request"
+          size="md"
         >
-          <div className="p-4">
-            <p className="text-gray-700 mb-4">
-              Please provide a reason for rejecting this request:
-            </p>
-            
-            <div className="mb-4">
-              <Textarea
-                value={rejectionReason}
-                onChange={(e) => setRejectionReason(e.target.value)}
-                placeholder="Enter reason for rejection..."
-                rows={4}
-              />
-            </div>
+          <p className="text-gray-700 mb-4">
+            Please provide a reason for rejecting this request:
+          </p>
+          
+          <div className="mb-6">
+            <Textarea
+              value={rejectionReason}
+              onChange={(e) => setRejectionReason(e.target.value)}
+              placeholder="Enter reason for rejection..."
+              rows={4}
+              className="w-full"
+            />
+          </div>
 
-            <div className="flex gap-3">
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setShowRejectionModal(false);
-                  setRejectionReason('');
-                }}
-                disabled={processing}
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="error"
-                onClick={handleReject}
-                disabled={processing || !rejectionReason.trim()}
-                className="flex-1"
-              >
-                {processing ? 'Rejecting...' : 'Reject'}
-              </Button>
-            </div>
+          <div className="flex gap-3">
+            <Button
+              variant="outline"
+              onClick={() => {
+                setShowRejectionModal(false);
+                setRejectionReason('');
+              }}
+              disabled={processing}
+              className="flex-1"
+            >
+              Cancel
+            </Button>
+            <Button
+              variant="danger"
+              onClick={handleReject}
+              disabled={processing || !rejectionReason.trim()}
+              className="flex-1"
+            >
+              {processing ? 'Rejecting...' : 'Reject'}
+            </Button>
           </div>
         </Modal>
 

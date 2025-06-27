@@ -2,8 +2,8 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import AuthLayout from '../components/AuthLayout';
-import RegisterForm from '../components/RegisterForm';
+import AuthLayout from '../component/AuthLayout';
+import RegisterForm from '../component/RegisterForm';
 
 export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
