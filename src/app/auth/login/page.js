@@ -140,15 +140,15 @@ export default function Login() {
             <div className="space-y-2 text-xs text-gray-600">
               <div className="flex justify-between">
                 <span>Admin:</span>
-                <span>admin@company.com / password</span>
+                <span>admin@mail.com / password</span>
               </div>
               <div className="flex justify-between">
                 <span>Manager:</span>
-                <span>manager@company.com / password</span>
+                <span>manager@mail.com / password</span>
               </div>
               <div className="flex justify-between">
                 <span>Employee:</span>
-                <span>employee@company.com / password</span>
+                <span>employee@mail.com / password</span>
               </div>
             </div>
           </div>
